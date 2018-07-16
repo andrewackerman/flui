@@ -204,6 +204,23 @@ giveBagel() {
 }
 ```
 
+### Commenting
+
+FLUI supports commenting with both line comments and block comments. Line comments are done by using the exclamation mark `!` character:
+
+```
+! This is a line comment
+```
+
+Block comments are done with a double explamation mark `!!` marking the beginning and end of the block:
+
+```
+!! This 
+is a 
+block
+comment !!
+```
+
 ## TODO
 
 This list in itself is a TODO, as I will probably think of new features and functions to add as the project comes along.
