@@ -9,11 +9,11 @@ namespace FluiParser.Language.Generator
 {
     public sealed partial class Generator
     {
-        private static readonly string _viewHeader = "// DO NOT WRITE CODE IN THIS FILE\n// IT WILL GET OVERWRITTEN WHEN THE UI CODE IS REBUILT\n\nimport 'package:flutter/material.dart';\n\nimport './{0}.dart';\n\nclass {1} extends {2} {{\n\t@override\n\tWidget build(BuildContext context) {{\n\t\treturn ";
-        private static readonly string _viewFooter = ";\n\t}\n}";
+        private static readonly string _viewHeader = "// DO NOT WRITE CODE IN THIS FILE\n// IT WILL GET OVERWRITTEN WHEN THE UI CODE IS REBUILT\n\nimport 'package:flutter/material.dart';\n\nimport './{0}.dart';\n\nclass {1} extends {2} {{\n{3}@override\n{3}Widget build(BuildContext context) {{\n{3}{3}return ";
+        private static readonly string _viewFooter = ";\n{0}}}\n}}";
 
         private int _indentLevel;
-        private string Indent => new string('\t', _indentLevel);
+        private string ViewIndent => new string(_options.IndentationCharacter, _indentLevel * _options.IndentationLength);
 
         private void ParseSymbolsForView()
         {
@@ -21,19 +21,20 @@ namespace FluiParser.Language.Generator
 
             string viewModelClass = _sourceDoc.ViewModelClassName;
             string viewClass = _sourceDoc.ViewClassName;
-            _builder.Append(string.Format(_viewHeader, viewModelClass.PascalCaseToUnderscore(), viewClass, viewModelClass));
+            _builder.Append(string.Format(_viewHeader, viewModelClass.PascalCaseToUnderscore(), viewClass, viewModelClass, ViewModelIndent));
 
-            ElementSingleNode root = _sourceDoc.ViewClass.Child as ElementSingleNode;
-            ParseElementSingle(root, true);
+            ElementSingleNode container = _sourceDoc.ViewClass.Child as ElementSingleNode;
+            SyntaxNode root = container.Child;
+            ParseSymbol(root, false, true);
 
-            _builder.Append(_viewFooter);
+            _builder.Append(string.Format(_viewFooter, ViewModelIndent));
         }
 
-        private void ParseSymbol(SyntaxNode node, bool insertIndent = true)
+        private void ParseSymbol(SyntaxNode node, bool insertIndent = true, bool isRoot = false)
         {
             if (insertIndent)
             {
-                _builder.Append(Indent);
+                _builder.Append(ViewIndent);
             }
 
             switch (node.Kind)
@@ -73,6 +74,14 @@ namespace FluiParser.Language.Generator
                 default:
                     throw new NotImplementedException($"Unrecognized node type {node.Kind}");
             }
+
+            if (isRoot)
+            {
+                if (_builder.ToString().EndsWith(','))
+                {
+                    _builder.Remove(_builder.Length - 1, 1);
+                }
+            }
         }
 
         private void ParseElement(ElementNode node)
@@ -95,17 +104,17 @@ namespace FluiParser.Language.Generator
             _indentLevel--;
 
             _builder.AppendLine();
-            _builder.Append($"{Indent}),");
+            _builder.Append($"{ViewIndent}),");
         }
 
-        private void ParseElementSingle(ElementSingleNode node, bool isRoot = false)
+        private void ParseElementSingle(ElementSingleNode node)
         {
             _builder.Append($"{node.Value}(");
 
             if (node.Child.Category == SyntaxCategory.Value)
             {
                 ParseSymbol(node.Child, false);
-                _builder.Append($")");
+                _builder.Append($"),");
             }
             else
             {
@@ -114,12 +123,7 @@ namespace FluiParser.Language.Generator
                 ParseSymbol(node.Child);
                 _indentLevel--;
                 _builder.AppendLine();
-                _builder.Append($"{Indent})");
-            }
-
-            if (!isRoot)
-            {
-                _builder.Append(",");
+                _builder.Append($"{ViewIndent}),");
             }
         }
 
@@ -138,7 +142,7 @@ namespace FluiParser.Language.Generator
             _indentLevel--;
 
             _builder.AppendLine();
-            _builder.Append($"{Indent}],");
+            _builder.Append($"{ViewIndent}],");
         }
 
         private void ParseAttributeSingle(AttributeSingleNode node)

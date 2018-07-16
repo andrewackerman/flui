@@ -11,10 +11,12 @@ namespace FluiParser.Language.Generator
         private static readonly string _viewModelHeader = "import 'package:flutter/material.dart';\n\nclass {0} extends StatelessWidget {{\n";
         private static readonly string _viewModelFooter = "\n}\n";
 
-        private static readonly string _identifierViewModel = "\tvar {0} = null; // TODO: Populate field {0}";
-        private static readonly string _functionViewModel = "\t{0}() {{\n\t\t// TODO: Populate function {0}\n\t}}";
+        private static readonly string _identifierViewModel = "{0}var {1} = null; // TODO: Populate field {1}";
+        private static readonly string _functionViewModel = "{0}{1}() {{\n{0}{0}// TODO: Populate function {1}\n{0}}}";
 
         private bool _memberAdded;
+
+        private string ViewModelIndent => new string(_options.IndentationCharacter, _options.IndentationLength);
 
         private void ParseSymbolsForViewModel()
         {
@@ -77,7 +79,7 @@ namespace FluiParser.Language.Generator
                 _builder.AppendLine();
             }
 
-            _builder.Append(string.Format(_functionViewModel, node.Value));
+            _builder.Append(string.Format(_functionViewModel, ViewModelIndent, node.Value));
 
             _memberAdded = true;
         }
@@ -90,7 +92,7 @@ namespace FluiParser.Language.Generator
                 _builder.AppendLine();
             }
 
-            _builder.Append(string.Format(_functionViewModel, node.Value));
+            _builder.Append(string.Format(_functionViewModel, ViewModelIndent, node.Value));
 
             _memberAdded = true;
         }
@@ -103,7 +105,7 @@ namespace FluiParser.Language.Generator
                 _builder.AppendLine();
             }
 
-            _builder.Append(string.Format(_identifierViewModel, node.Value));
+            _builder.Append(string.Format(_identifierViewModel, ViewModelIndent, node.Value));
 
             _memberAdded = true;
         }

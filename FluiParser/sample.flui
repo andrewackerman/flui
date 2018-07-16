@@ -14,5 +14,5 @@
 						'Flui wants a bagel' 
 						.style $getStyle
 					RaisedButton:
-						.title 'Get Flui a bagel'
-						.onPressed @getBagel
+						.title 'Give Flui a bagel'
+						.onPressed @giveBagel
