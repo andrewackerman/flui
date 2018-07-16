@@ -212,5 +212,5 @@ This list in itself is a TODO, as I will probably think of new features and func
 - [ ] Intelligently add fields and functions to the view model so as to not overwrite existing changes
 - [ ] Eliminate common attributes from having to be explicitly stated (e.g. `.child` for `Center`, `.children` for `Column`, etc.)
 - [ ] VS Code plugin for syntax and colorization support
-- [ ] VS Code integration for detecting changes in UI files to update the view and view state files (which would, in tirn, trigger hot reloading for Flutter itself)
+- [ ] VS Code integration for detecting changes in UI files to update the view and view model files (which would, in tirn, trigger hot reloading for Flutter itself)
 - [ ] Hook up automated integration testing for future build changes
