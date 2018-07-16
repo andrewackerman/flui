@@ -1,0 +1,25 @@
+﻿document		= widget_type, white_space, view_model_attr, white_space, identifier, desc_marker, new_line, descendent;
+descendent		= indentation, ( node | attribute | value );
+node			= identifier, [ white_space, attribute ], [{ attr_separator, white_space, attribute }], [ desc_marker, { new_line, descendent }];
+attribute 		= attr_marker, identifier, white_space, ( node | value | desc_marker, new_line, descendent );
+value 			= ( bool_literal | num_literal | string_literal );
+
+line_comment	= /!.*?$/;
+block_comment	= /!!.*?!!/;
+
+bool_literal	= ( "true" | "false" );
+num_literal		= ( int_literal | hex_literal | float_literal | exp_literal );
+string_literal	= /(".*?(?<!\\)"|'.*?(?<!\\)')/;
+
+int_literal		= /-?[0-9]+/;
+hex_literal		= /-?0x[0-9a-fA-F]/;
+float_literal	= /-?[0-9]+\.[0-9]+/;
+exp_literal		= /-?[0-9]+e-?[0-9]+/;
+
+white_space		= /[ \t\r\n\u000C]+/;
+intentation		= /\t+/;
+new_line		= /(\n|\r\n)/;
+identifier		= /[a-zA-Z_][a-zA-Z0-9_]+;
+desc_marker		= ":";
+attr_marker		= ".";
+attr_separator	= ",";
