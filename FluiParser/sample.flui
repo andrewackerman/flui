@@ -2,19 +2,17 @@
 	Center .child:
 		Column .children:
 			! Child 1
-			Card .child
-				Column .children
+			Card .child:
+				Column .children:
 					Text 'Hello World'
 					Text 'Flui says hello'
-			!!
-			Child 2
-			!!
-			Card .child
-				Column .children
+			! Child 2
+			Card .child:
+				Column .children:
 					Text 'Hello again, World', .style textStyle
-					Text 
+					Text:
 						'Flui wants a bagel' 
 						.style $getStyle
-					RaisedButton 
+					RaisedButton:
 						.title 'Get Flui a bagel'
 						.onPressed @getBagel
